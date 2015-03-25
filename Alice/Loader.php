@@ -72,7 +72,7 @@ class Loader
         $newReferences = array();
         foreach ($this->references as $name => $reference) {
             // Don't merge value objects, e.g. Doctrine embeddables
-            if ($this->hasIdentity($reference)) {
+            if ($this->persister->contains($reference)) {
                 $reference = $this->persister->merge($reference);
             }
 
@@ -106,7 +106,9 @@ class Loader
         }
 
         foreach ($loader->getReferences() as $name => $obj) {
-            $this->persister->detach($obj);
+            if ($this->persister->contains($obj)) {
+                $this->persister->detach($obj);
+            }
             $this->references->set($name, $obj);
         }
 
@@ -178,14 +180,5 @@ class Loader
         }
     }
 
-    /**
-     * Returns whether the passed in object has "identity" as defined by Doctrine.
-     * 
-     * @param mixed $reference
-     * @return bool
-     */
-    private function hasIdentity($reference)
-    {
-        return count($this->objectManager->getClassMetadata(get_class($reference))->getIdentifier()) > 0;
-    }
+
 }

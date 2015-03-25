@@ -30,4 +30,17 @@ class Doctrine extends BaseDoctrine
     {
         return $this->om->merge($obj);
     }
+
+    /**
+     * Check for managed objects
+     *
+     * @param $obj
+     *
+     * @return bool
+     */
+    public function contains($obj)
+    {
+        return $this->om->contains($obj);
+    }
+
 }
